@@ -10,8 +10,9 @@
 </head>
 <body class="bg-dark text-white">
     <div class="container mt-4 col-4 col-offset-6">
-        <h1 class="display-3">POST form</h1>
-        <form method="POST" action="/api/v1/signup" enctype="multipart/form-data">
+     <h1 class="display-3">POST form</h1>
+          <!-- action is the url where request would be made to backend -->
+         <form method="POST" action="/api/v1/signup" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="name" class="form-label">firstname</label>
               <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
@@ -21,7 +22,7 @@
               <input type="text" name="email" class="form-control" id="email" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">email</label>
+              <label for="password" class="form-label">PASSOWRD</label>
               <input type="password" name="password" class="form-control" id="password" aria-describedby="emailHelp">
             </div>
             

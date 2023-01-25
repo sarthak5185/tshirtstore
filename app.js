@@ -20,6 +20,8 @@ app.use(cors());
 
 //cookies and file middleware
 app.use(cookieParser());
+
+//FILE UPLOAD MIDDLEWARE SET USETEMPFILES AND SPECIFY THE DIRECTORY
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -27,7 +29,7 @@ app.use(
   })
 );
 // temp check
-app.set("view enginer","ejs");
+app.set("view engine","ejs");
 //morgan middleware
 app.use(morgan("tiny"));
 
@@ -39,8 +41,9 @@ const user=require("./routes/user");
 app.use("/api/v1", home);
 app.use("/api/v1", user);
 
-app.get('/signuptest',(req,res)=>{
+
+app.get("/signuptest", (req, res) => {
   res.render("signuptest");
-})
+});
 //export app.js
 module.exports=app;
