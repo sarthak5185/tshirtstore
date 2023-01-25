@@ -75,10 +75,17 @@ exports.signup = BigPromise(async (req, res, next) => {
     }
     cookieToken(user, res);
   });
-  // exports.logout=BigPromise(async(req,res,next)=>{
-  //   res.clearCookie('token');
-  //   res.status(200).json({
-  //     success:true,
-  //     message:"LOGOUT SUCCESSFULL",
-  //   })
-  // })
+  /******************************************************
+ * @LOGOUT
+ * @route http://localhost:4000/api/v1/logout
+ * @description User logout bby clearing user cookies
+ * @parameters  
+ * @returns success message
+ ******************************************************/
+  exports.logout=BigPromise(async(req,res,next)=>{
+    res.clearCookie('token');
+    res.status(200).json({
+      success:true,
+      message:"LOGOUT SUCCESSFULL",
+    })
+  })
