@@ -7,7 +7,7 @@ const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary");
 /******************************************************
  * @SIGNUP
- * @route http://localhost:4000/api/auth/signup
+ * @route http://localhost:4000/api/v1/signup
  * @description User signUp Controller for creating new user
  * @parameters name, email, password
  * @returns  User Object and a make a cookie containing token value and user object
@@ -44,8 +44,20 @@ exports.signup = BigPromise(async (req, res, next) => {
     });
     cookieToken(user, res);
   });
+
+  /******************************************************
+ * @LOGIN
+ * @route http://localhost:4000/api/v1/login
+ * @description User signIn Controller for loging new user
+ * @parameters  email, password
+ * @returns User Object
+ ******************************************************/
   exports.login = BigPromise(async (req, res, next) => {
     //let result;
+    // 1.GET EMAIL AND PASSWORD FROM USER
+    // 2.CHECK IF USER EXISTS AND SELECT PASSWORD
+    //3.CHECK IF THE PASSOWRD IS CORRECT USING METHOD IN OUR SCHEMA
+    //4.CREATE A COOKIE CONSISTING OF TOKEN,USER AND EXPIRY AND SEND THAT COOKIE
     const {email, password } = req.body;
   
     if (!email || !password) {
@@ -63,10 +75,10 @@ exports.signup = BigPromise(async (req, res, next) => {
     }
     cookieToken(user, res);
   });
-  exports.logout=BigPromise(async(req,res,next)=>{
-    res.clearCookie('token');
-    res.status(200).json({
-      success:true,
-      message:"LOGOUT SUCCESSFULL",
-    })
-  })
+  // exports.logout=BigPromise(async(req,res,next)=>{
+  //   res.clearCookie('token');
+  //   res.status(200).json({
+  //     success:true,
+  //     message:"LOGOUT SUCCESSFULL",
+  //   })
+  // })
