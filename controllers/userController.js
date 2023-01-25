@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const cookieToken = require("../utils/cookieToken");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary");
+const mailHelper = require("../utils/emailhelper");
 /******************************************************
  * @SIGNUP
  * @route http://localhost:4000/api/v1/signup
@@ -89,3 +90,57 @@ exports.signup = BigPromise(async (req, res, next) => {
       message:"LOGOUT SUCCESSFULL",
     })
   })
+
+  /******************************************************
+ * @FORGOT_PASSWORD
+ * @route http://localhost:4000/api/v1/forgotPassword
+ * @description User will submit email and we will generate a token
+ * @parameters  email
+ * @returns success message - email send
+ ******************************************************/
+//1.GRAB THE EMAIL
+//2.SEARCH FOR USER IN DATABASE USING THE EMAIL
+//3.IF NO USER FOUND THROW AN ERROR
+//4.GET FORGET PASSWORD TOKEN FROM USER.GETFORGOTPASSWORDTOKEN
+//5.SAVE THIS TOKEN IN DATABASE USING await user.save({validateBeforeSave:false}) as we wish to save only token
+//6.GENRATE FUTURE PROOF URL OF RESET FROM PROTOCOL AND HOST
+//7.SEND THE MAIL TO USER WITH MAILHELPER 
+//8. IF MAIL FAILS BACKTRACK THE FORGETPASSWORDTOKEN AND EXPIRY AND SET THEM TO NULL BACK AGAIN
+exports.forgotPassword=BigPromise(async(req,res,next)=>{
+  const {email}=req.body;
+  console.log(email);
+  const user=await User.findOne({email});
+  if(!user)
+  {
+      return next(new CustomError('NOT REGISTERED IN DATABASE',400));
+  }
+  const forgetpasswordtoken=await user.getForgotPasswordToken();
+
+  await user.save({validateBeforeSave:false});
+
+  const myUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/password/reset/${forgetpasswordtoken}`;
+    
+  const message=`Copy paste this link in your URL and hit enter \n\n ${myUrl}`;;
+  console.log(message);
+  try
+  {
+    await mailHelper({
+      email:user.email,
+      subject:"LCO TSHIRT STORE PASSWD RESET MAIL",
+      message,
+    });
+    res.status(200).json({
+      success:true,
+      message:`Email send to ${user.email}`
+    })
+  }
+  catch(error)
+  {
+      user.forgotPasswordExpiry=undefined;
+      user.forgotPasswordToken=undefined;
+      await user.save({validateBeforeSave:false});
+      throw new CustomError(error.message || 'Email sent failure', 500)
+  }
+})
