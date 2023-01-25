@@ -120,7 +120,7 @@ exports.forgotPassword=BigPromise(async(req,res,next)=>{
 
   const myUrl = `${req.protocol}://${req.get(
     "host"
-  )}/password/reset/${forgetpasswordtoken}`;
+  )}/api/v1/password/reset/${forgetpasswordtoken}`;
     
   const message=`Copy paste this link in your URL and hit enter \n\n ${myUrl}`;;
   console.log(message);
@@ -143,4 +143,45 @@ exports.forgotPassword=BigPromise(async(req,res,next)=>{
       await user.save({validateBeforeSave:false});
       throw new CustomError(error.message || 'Email sent failure', 500)
   }
+})
+
+ /******************************************************
+ * @RESET_PASSWORD
+ * @route http://localhost:4000/api/v1/password/reset/:resetToken
+ * @description User will be able to reset password based on url token
+ * @parameters  token from url, password and confirmpass
+ * @returns User object
+ ******************************************************/
+//get token from params
+// hash the token as db also stores the hashed version
+// find user based on hased on token and time in future
+// check if password and conf password matched
+// update password field in DB
+// reset token fields
+// save the user
+exports.resetPassword=BigPromise(async(req,res,next)=>{
+    const token=req.params.token;
+    const hashtokenec=crypto.createHash("sha256").update(token).digest("hex");
+    const user=await User.findOne({
+      hashtokenec,
+      forgotPasswordExpiry:{$gt:Date.now()},
+    });
+    if(!user)
+    {
+      return next(new CustomError("EXPIRED TOKEN", 400));
+    }
+    if (req.body.password !== req.body.confirmPassword) {
+      return next(
+        new CustomError("password and confirm password do not match", 400)
+      );
+    }
+    // update password field in DB
+    user.password=req.body.password;
+    // reset token fields
+    user.forgotPasswordExpiry=undefined;
+    user.forgotPasswordToken=undefined;
+
+    // save the user
+    await user.save();
+    cookieToken(user,res);
 })
