@@ -150,7 +150,7 @@ exports.forgotPassword=BigPromise(async(req,res,next)=>{
  * @route http://localhost:4000/api/v1/password/reset/:resetToken
  * @description User will be able to reset password based on url token
  * @parameters  token from url, password and confirmpass
- * @returns User object
+ * @returns none
  ******************************************************/
 //get token from params
 // hash the token as db also stores the hashed version
@@ -205,13 +205,23 @@ exports.getLoggedInUserDetails=BigPromise(async(req,res,next)=>{
   });
 });
 
+
+
+
+
 /******************************************************
- * @LoggedInUserDetails
+ * @ChangePassword
  * @route http://localhost:4000/api/v1/password/update
  * @description User will be able to fetch his detals
  * @parameters oldPassword,password
  * @returns none
  ******************************************************/
+//1.get user object from middleware
+//2.get user from database
+//3.check if old password is correct
+//4.allow to set new Password
+//5.save the user in databse
+//6. make cookie for this
 exports.ChangePassword=BigPromise(async(req,res,next)=>{
   const id=req.user.id;
   const user=await User.findById(id).select("+password");

@@ -9,6 +9,7 @@ router.route("/forgotPassword").post(forgotPassword);
 router.route("/password/reset/:token").post(resetPassword);
 // isLoggedIn middleware is being injected
 router.route("/userdashboard").get(isLoggedIn,getLoggedInUserDetails);
+// update password route
 router.route("/password/update").put(isLoggedIn,ChangePassword);
 
 module.exports=router;
