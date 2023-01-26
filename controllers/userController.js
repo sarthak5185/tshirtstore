@@ -185,3 +185,22 @@ exports.resetPassword=BigPromise(async(req,res,next)=>{
     await user.save();
     cookieToken(user,res);
 })
+ /******************************************************
+ * @LoggedInUserDetails
+ * @route http://localhost:4000/api/v1/userdashboard
+ * @description User will be able to fetch his detals
+ * @parameters  none
+ * @returns User object
+ ******************************************************/
+exports.getLoggedInUserDetails=BigPromise(async(req,res,next)=>{
+  const id=req.user.id;
+  const user=await User.findById(id);
+  if(!user)
+  {
+    return next(new CustomError("USER NOT FOUND",400));
+  }
+  res.status(200).json({
+    success:true,
+    user,
+  });
+});
