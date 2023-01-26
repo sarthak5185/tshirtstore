@@ -256,3 +256,16 @@ exports.managerAllusers=BigPromise(async(req,res,next)=>{
     message:"MANAGER FOUND SUCCESSFULLY",
   })
 });
+
+
+exports.admingetOneUser=BigPromise(async(req,res,next)=>{
+  // get id from url and get user from database
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    next(new CustomError("No user found", 400));
+  }
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
