@@ -204,3 +204,23 @@ exports.getLoggedInUserDetails=BigPromise(async(req,res,next)=>{
     user,
   });
 });
+
+/******************************************************
+ * @LoggedInUserDetails
+ * @route http://localhost:4000/api/v1/password/update
+ * @description User will be able to fetch his detals
+ * @parameters oldPassword,password
+ * @returns none
+ ******************************************************/
+exports.ChangePassword=BigPromise(async(req,res,next)=>{
+  const id=req.user.id;
+  const user=await User.findById(id).select("+password");
+  const isPasswordCorrect=await user.isValidatedPassword(req.body.oldPassword);
+  if(!isPasswordCorrect)
+  {
+        return next(new CustomError('EMAIL OR PASSWORD DOES NOT EXIST',400));
+  }
+  user.password=req.body.password;
+  await user.save();
+  cookieToken(user, res);
+});
