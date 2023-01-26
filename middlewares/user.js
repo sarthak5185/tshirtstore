@@ -16,3 +16,15 @@ exports.isLoggedIn=BigPromise(async(req,res,next)=>{
     req.user=await User.findById(decoded.id);
     next();
 });
+// 1. MIDDLWARE ADDED TO CHECK WHETER THE ROLE OF USER MATCHES WHAT BEING PASSED AS PARAMETER
+//2. IF NOT THROW AN ERROR
+//3.ELSE PASS THE NEXT() FUNCTION FOR FURTHER EXECUTION OF MIDDLEWARES
+exports.isCustomRole=(...roles)=>{
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+          return next(new CustomError("You are not allowed for this resouce", 403));
+        }
+        console.log(req.user.role);
+        next();
+      };
+};

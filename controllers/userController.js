@@ -234,3 +234,11 @@ exports.ChangePassword=BigPromise(async(req,res,next)=>{
   await user.save();
   cookieToken(user, res);
 });
+
+exports.adminAllusers=BigPromise(async(req,res,next)=>{
+  const user=await User.find();
+  res.status(200).json({
+    user,
+    message:"USER FOUND SUCCESSFULLY"
+  })
+});
