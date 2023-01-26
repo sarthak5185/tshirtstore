@@ -242,3 +242,17 @@ exports.adminAllusers=BigPromise(async(req,res,next)=>{
     message:"USER FOUND SUCCESSFULLY"
   })
 });
+/******************************************************
+ * @ManagerAllusers
+ * @route http://localhost:4000/api/v1/admin/manager
+ * @description User with role managaer will be able to fetch all users with role of user
+ * @parameters none
+ * @returns user object with role of a manager
+ ******************************************************/
+exports.managerAllusers=BigPromise(async(req,res,next)=>{
+  const user=await User.find({role:"user"});
+  res.status(200).json({
+    user,
+    message:"MANAGER FOUND SUCCESSFULLY",
+  })
+});
