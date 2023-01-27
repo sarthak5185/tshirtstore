@@ -8,23 +8,12 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please provide a name"],
-    maxlength: [40, "Name should be under 40 characters"],
+    maxlength: [40, "Name should be under 40 characters"]
   },
-  email: {
-    type: String,
-    required: [true, "Please provide an email"],
-    validate: [validator.isEmail, "Please enter email in correct format"],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide a password"],
-    minlength: [6, "password should be atleast 6 char"],
-    select: false,
-  },
-  role: {
-    type: String,
-    default: "user",
+  price: {
+    type: Number,
+    required: [true, "please provide product price"],
+    maxlength: [6, "Product price should not be more than 6 digits"],
   },
   photo: {
     id: {
@@ -36,12 +25,7 @@ const userSchema = new mongoose.Schema({
       required: true,
     },
   },
-  forgotPasswordToken: String,
-  forgotPasswordExpiry: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  
 });
 
 //encrypt password before save - HOOKS
