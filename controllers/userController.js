@@ -189,7 +189,8 @@ exports.resetPassword=BigPromise(async(req,res,next)=>{
  * @LoggedInUserDetails
  * @route http://localhost:4000/api/v1/userdashboard
  * @description User will be able to fetch his detals
- * @parameters  none
+ * @parameters  name email role
+ * @params userid
  * @returns User object
  ******************************************************/
 exports.getLoggedInUserDetails=BigPromise(async(req,res,next)=>{
@@ -235,6 +236,47 @@ exports.ChangePassword=BigPromise(async(req,res,next)=>{
   cookieToken(user, res);
 });
 
+/******************************************************
+ * @UPDATE USER DETAILS
+ * @route http://localhost:4000/api/v1/userdashboard/update
+ * @description User will be able to modify his details
+ * @parameters name,email,password,file
+ * @returns none
+ ******************************************************/
+exports.updateUserDetails=BigPromise(async(req,res,next)=>{
+  const ndata={
+    email:req.body.email,
+    name:req.body.name,
+  };
+  if(req.files)
+  {
+    const user=await User.findById(req.user.id);
+    const oldimageid=user.photo.id;
+    const oldimageurl=user.photo.secure_url;
+    const resp= await cloudinary.v2.uploader.destroy(oldimageid);
+    const result = await cloudinary.v2.uploader.upload(req.files.photo.tempFilePath, {
+      folder: "users",
+      width: 150,
+      crop: "scale",
+    });
+    ndata.photo={
+      id:result.public_id,
+      secure_url:result.secure_url,
+    };
+  }
+  const user=await User.findByIdAndUpdate(req.user.id,ndata,{
+    new:true,
+    runValidators:true,
+    useFindAndModify:true,
+  });
+  res.status(200).json({
+    success: true,
+    user
+  });
+  cookieToken(user,res);
+});
+
+
 exports.adminAllusers=BigPromise(async(req,res,next)=>{
   const user=await User.find();
   res.status(200).json({
@@ -267,5 +309,31 @@ exports.admingetOneUser=BigPromise(async(req,res,next)=>{
   res.status(200).json({
     success: true,
     user,
+  });
+});
+/******************************************************
+ * @ADMIN UPDATE ONE USER DETAILS
+ * @route http://localhost:4000/api/v1/admin/user/63d0cba251e111961851cb3f
+ * @description ADMIN WILL CLICK ON THE PARTICULAR USER AND WILL ABE TO MODIFY HIS DETAILS LIKE NAME EMAIL ROLE
+ * @parameters name,email,password,file
+ * @returns none
+ ******************************************************/
+//1. GET NAME EMAIL ROLE FROM BODY
+//2. FIND USER WHOSE DETAILS TO BE MODIFIED USING ID IN PARAMS
+//3.UPDATE USING ID
+//4. IF SUCCESFULL THROW SUCCESS MESSAGE
+exports.adminUpdateOneUserDetails=BigPromise(async(req,res,next)=>{
+  const ndata={
+    name:req.body.name,
+    email:req.body.email,
+    role:req.body.role,
+  };
+  const user=await User.findByIdAndUpdate(req.params.id,ndata,{
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({
+    success:true,
   });
 });
