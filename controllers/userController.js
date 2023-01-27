@@ -337,3 +337,23 @@ exports.adminUpdateOneUserDetails=BigPromise(async(req,res,next)=>{
     success:true,
   });
 });
+/******************************************************
+ * @ADMIN DELETE ONE USER DETAILS
+ * @route http://localhost:4000/api/v1/admin/user/63d0cba251e111961851cb3f
+ * @description ADMIN WILL CLICK ON THE PARTICULAR USER AND WILL BE ABLE TO DELETE IT FROM DATABSE
+ * @params id of user to be deleted
+ * @parameters NONE
+ * @returns none
+ ******************************************************/
+exports.adminDeleteOneUserDetails=BigPromise(async(req,res,next)=>{
+    const id=req.params.id;
+    const user=await User.findById(id);
+    const oldimageid=user.photo.id;
+    const oldimageurl=user.photo.secure_url;
+    const resp= await cloudinary.v2.uploader.destroy(oldimageid);
+    const deluser=await User.findByIdAndDelete(id);
+    res.status(200).json({
+      success:true,
+      deluser,
+    });
+});

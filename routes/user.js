@@ -1,7 +1,7 @@
 const express=require('express');
 const router=express.Router()
 const{signup,login,logout,forgotPassword,resetPassword,getLoggedInUserDetails,ChangePassword,adminAllusers,managerAllusers,admingetOneUser
-,updateUserDetails,adminUpdateOneUserDetails}=require('../controllers/userController');
+,updateUserDetails,adminUpdateOneUserDetails,adminDeleteOneUserDetails}=require('../controllers/userController');
 const {isLoggedIn,isCustomRole}=require('../middlewares/user');
 router.route("/signup").post(signup);
 router.route("/login").post(login);
@@ -19,6 +19,7 @@ router.
     route("/admin/user/:id")
     .get(isLoggedIn, isCustomRole("admin"), admingetOneUser)
     .put(isLoggedIn,isCustomRole("admin"),adminUpdateOneUserDetails)
+    .post(isLoggedIn,isCustomRole("admin"),adminDeleteOneUserDetails)
 // manager only routes
 router.route("/manager/users").get(isLoggedIn,isCustomRole('manager'),managerAllusers);
 
