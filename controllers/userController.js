@@ -343,7 +343,7 @@ exports.adminUpdateOneUserDetails=BigPromise(async(req,res,next)=>{
  * @description ADMIN WILL CLICK ON THE PARTICULAR USER AND WILL BE ABLE TO DELETE IT FROM DATABSE
  * @params id of user to be deleted
  * @parameters NONE
- * @returns none
+ * @returns deluser
  ******************************************************/
 exports.adminDeleteOneUserDetails=BigPromise(async(req,res,next)=>{
     const id=req.params.id;
@@ -357,3 +357,4 @@ exports.adminDeleteOneUserDetails=BigPromise(async(req,res,next)=>{
       deluser,
     });
 });
+
