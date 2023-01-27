@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema({
 // category can also be created as a seprate model and be refreneced like user
 // The enum validator is an array that will check if the value given is an item in the array. If the value is not in the array, 
 //Mongoose will throw a ValidationError when you try to save().
-  category: {
+category: {
     type: String,
     required: [
       true,
@@ -44,8 +44,7 @@ const productSchema = new mongoose.Schema({
         "please select category ONLY from - short-sleeves, long-sleeves, sweat-shirts and hoodies ",
     },
   },
-  //this field was updated in order videos later
-  stock: {
+stock: {
     type: Number,
     required: [true, "please add a number in stock"],
   },
@@ -85,7 +84,7 @@ const productSchema = new mongoose.Schema({
       },
     },
   ],
-  //this is refrence to user from user schema
+  //this is refrence to user from user schema in order to store which user added this product
   user: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
