@@ -3,6 +3,7 @@ const CustomError = require("../utils/customError");
 const Product=require("../models/product");
 const cloudinary=require("cloudinary")
 const WhereClause = require("../utils/whereClause");
+const product = require("../models/product");
 exports.home = BigPromise(async (req, res) => {
     // const db = await something()
     res.status(200).json({
@@ -122,5 +123,84 @@ exports.adminGetAllProduct = BigPromise(async (req, res, next) => {
   res.status(200).json({
     success: true,
     products,
+  });
+});
+
+/******************************************************
+ * @PUT adminUpdateOneProduct
+ * @route http://localhost:4000/api/v1/admin/product/id
+ * @description ADMIN SHALL BE ABLE TO UPDATE PARTICULAR PRODUCT
+ * @params ID
+ * @returns object containing success message,products
+ ******************************************************/
+//1. FIND A PARTICULAR PRODUCT BY ITS ID
+//2. IF PRODUCT DNE THROW AN ERROR
+//3. DELETE THE OLD PHOTOS FROM CLOUDINARY
+//4.SET THE PHOTOS ARRAY AND UPDATE THE ARRAY IN REQ
+exports.adminUpdateOneProduct=BigPromise(async (req, res, next) => {
+  let prod=await Product.findById(req.params.id);
+  if(!prod)
+  {
+    return next(new CustomError("No product found with this id", 401));
+  }
+  let imageArray=[];
+  if(req.files)
+  {
+    // destroying the old image
+    for(let index=0;index<prod.photos.length;index++)
+    {
+        const res = await cloudinary.v2.uploader.destroy(
+          prod.photos[index].id
+        );
+    }
+    // uploading the new image
+    for (let index = 0; index < req.files.photos.length; index++) {
+      let result = await cloudinary.v2.uploader.upload(
+        req.files.photos[index].tempFilePath,
+        {
+          folder: "products", //folder name -> .env
+        }
+      );
+      imageArray.push({
+        id: result.public_id,
+        secure_url: result.secure_url,
+      });
+    }
+  }
+  req.body.photos=imageArray;
+  let product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
+/******************************************************
+ * @DELETE adminDeleeOneProduct
+ * @route http://localhost:4000/api/v1/admin/product/id
+ * @description ADMIN SHALL BE ABLE TO DELETE PARTICULAR 
+ * @params ID
+ * @returns object containing success message,products
+ ******************************************************/
+exports.adminDeleteOneProduct = BigPromise(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return next(new CustomError("No product found with this id", 401));
+  }
+
+  //destroy the existing image
+  for (let index = 0; index < product.photos.length; index++) {
+    const res = await cloudinary.v2.uploader.destroy(product.photos[index].id);
+  }
+
+  await product.remove();
+
+  res.status(200).json({
+    success: true,
+    message: "Product was deleted !",
   });
 });

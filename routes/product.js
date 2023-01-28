@@ -1,6 +1,6 @@
 const express=require('express');
 const router=express.Router()
-const{home,addProduct,getAllProduct,adminGetAllProduct,getOneProduct}=require('../controllers/productController');
+const{home,addProduct,getAllProduct,getOneProduct,adminGetAllProduct,adminUpdateOneProduct,adminDeleteOneProduct}=require('../controllers/productController');
 const {isLoggedIn,isCustomRole}=require('../middlewares/user');
 router.route("/product").get(home);
 
@@ -16,7 +16,10 @@ router
   .route("/admin/products")
   .get(isLoggedIn,isCustomRole("admin"),adminGetAllProduct);
 
-
+  router
+  .route("/admin/product/:id")
+  .put(isLoggedIn,isCustomRole("admin"),adminUpdateOneProduct)
+  .delete(isLoggedIn,isCustomRole("admin"),adminDeleteOneProduct)
 
 module.exports=router;
 
