@@ -90,5 +90,37 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
     totalcountproduct,
     resultperPage
   });
+});
+  /******************************************************
+ * @GET ONE PRODUCT
+ * @route http://localhost:4000/api/v1/getOneProduct/productid
+ * @description USER SHALL BE ABLE TO GET PRODUCT WITH A PARTICULAR ID
+ * @params ID
+ * @returns object containing success message,product
+ ******************************************************/
+  exports.getOneProduct=BigPromise(async(req,res)=>{
+    let prod=await Product.findById(req.params.id);
+    if (!prod) {
+      return next(new CustomError("No product found with this id", 401));
+    }
+    res.status(200).json({
+      success:true,
+      prod,
+    })
+  });
 
+/******************************************************
+ * @GET admingetAllProduct
+ * @route http://localhost:4000/api/v1/adminGetAllProduct
+ * @description ADMIN SHALL BE ABLE TO GET ALL PRODUCTS
+ * @params NONE
+ * @returns object containing success message,products
+ ******************************************************/
+exports.adminGetAllProduct = BigPromise(async (req, res, next) => {
+  const products = await Product.find();
+
+  res.status(200).json({
+    success: true,
+    products,
+  });
 });
