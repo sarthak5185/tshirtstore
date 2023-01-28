@@ -9,6 +9,13 @@ exports.home = BigPromise(async (req, res) => {
       greeting: "Hello from PRODUCT API",
     });
   });
+  /******************************************************
+ * @ADD PRODUCT
+ * @route http://localhost:4000/api/v1/admin/product/add
+ * @description USER SHALL BE ABLE TO ADD A PRODUCT
+ * @parameters  NAME,PHOTO,PRICE,DESCRIPTION,BRAND,STOCK,CATEGORY
+ * @returns  PRODUCT OBJECT 
+ ******************************************************/
 exports.addProduct=BigPromise(async(req,res)=>{
   // images
   const ndata={
@@ -51,4 +58,14 @@ exports.addProduct=BigPromise(async(req,res)=>{
     success: true,
     product,
   });
+});
+  /******************************************************
+ * @GET All Products
+ * @route http://localhost:4000/api/v1/admin/product/add
+ * @description USER SHALL BE ABLE TO ADD A PRODUCT
+ * @parameters  NAME,PHOTO,PRICE,DESCRIPTION,BRAND,STOCK,CATEGORY
+ * @returns  PRODUCT OBJECT 
+ ******************************************************/
+exports.getAllProduct=BigPromise(async(req,res)=>{
+ 
 });
