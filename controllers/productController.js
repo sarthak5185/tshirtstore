@@ -2,6 +2,7 @@ const BigPromise = require("../middlewares/bigPromise");
 const CustomError = require("../utils/customError");
 const Product=require("../models/product");
 const cloudinary=require("cloudinary")
+const WhereClause = require("../utils/whereClause");
 exports.home = BigPromise(async (req, res) => {
     // const db = await something()
     res.status(200).json({
@@ -61,11 +62,33 @@ exports.addProduct=BigPromise(async(req,res)=>{
 });
   /******************************************************
  * @GET All Products
- * @route http://localhost:4000/api/v1/admin/product/add
- * @description USER SHALL BE ABLE TO ADD A PRODUCT
- * @parameters  NAME,PHOTO,PRICE,DESCRIPTION,BRAND,STOCK,CATEGORY
- * @returns  PRODUCT OBJECT 
+ * @route http://localhost:4000/api/v1/searcn=coder&page=2&category=shortsleaves&ratings[gte]=4&price[lte]=999&price[gte]=199
+ * @description USER SHALL BE ABLE TO GET ALL PRODUCTS BASED ON THE QUERY
+ * @params search,page,category,ratings,price
+ * @returns object containing success message,products,filteredProductNumber,totalCountProduct,resultPerPage
  ******************************************************/
 exports.getAllProduct=BigPromise(async(req,res)=>{
- 
+  let resultperPage=6;
+  const totalcountproduct=await Product.countDocuments();
+
+  const productsObj=new WhereClause(Product.find(),req.query)
+  .search()
+  .filter();
+
+  let products=await productsObj.base;
+  const filteredproductnumber=products.length;
+
+  productsObj.pager(resultperPage);
+  /*  WE USE A CLONE METHOD TO AVOID DUPLICATE QUERY EXECUTION
+      product.limit(resultperpage).skip(skipval) */
+  products=await productsObj.base.clone(); 
+
+  res.status(200).json({
+    success:true,
+    products,
+    filteredproductnumber,
+    totalcountproduct,
+    resultperPage
+  });
+
 });
