@@ -180,7 +180,20 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
         success:true,
       });
   });
-
+  /******************************************************
+ * @GET REVIEWS FOR ONE PRODUCT
+ * @route http://localhost:4000/api/v1/adminGetAllProduct
+ * @description USER WOULD BE ABLE TO SEE ALL REVIEWS WITH PARTICULAR PRODUCT ID
+ * @params PRODUCT ID
+ * @returns object containing success message,REVIEWS
+ ******************************************************/
+  exports.getOnlyReviewsForOneProduct = BigPromise(async (req, res, next) => {
+    const product = await Product.findById(req.params.id);
+    res.status(200).json({
+      success: true,
+      reviews: product.reviews,
+    });
+  });
 /******************************************************
  * @GET admingetAllProduct
  * @route http://localhost:4000/api/v1/adminGetAllProduct
