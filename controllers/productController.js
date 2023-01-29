@@ -109,6 +109,47 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
       prod,
     })
   });
+   /******************************************************
+ * @POST  ADD REVIEW
+ * @route http://localhost:4000/api/v1/review
+ * @description FRONTEND WILL SEND DETAILS LIKE RATING,COMMENT AND PRODUCTID AND USER SHALL BE ABLE TO ADD REVIEW
+ * @params NONE
+ * @returns object containing success
+ ******************************************************/
+  exports.addReview = BigPromise(async (req, res, next) => {
+    const {rating,comment,productId}=req.body;
+    const review={
+      user:req.user._id,
+      name:req.user.name,
+      rating:Number(rating),
+      comment,
+    }
+    const product = await Product.findById(productId);
+
+    const AlreadyReview=Product.find({_id:{productId},"reviews.user":req.user._id});
+   
+    if(AlreadyReview.length>0)
+    {
+      product.reviews.forEach((review) => {
+        if (review.user.toString() === req.user._id.toString()) {
+          review.comment = comment;
+          review.rating = rating;
+        }
+      });
+    }
+    else
+    {
+        product.reviews.push(review)
+        product.numberOfReviews=product.reviews.length
+    }
+    product.ratings =product.reviews.reduce((acc, item) => item.rating + acc, 0)/product.reviews.length;
+    await product.save({
+      validateBeforeSave:false,
+    });
+    res.status(200).json({
+      success:true,
+    });
+  });
 
 /******************************************************
  * @GET admingetAllProduct
