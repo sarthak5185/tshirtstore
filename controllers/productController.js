@@ -129,7 +129,6 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
     const AlreadyReview = product.reviews.find(
       (rev) => rev.user.toString() === req.user._id.toString()
     );
-
     if(AlreadyReview)
     {
       product.reviews.forEach((review) => {
@@ -151,6 +150,35 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
     res.status(200).json({
       success:true,
     });
+  });
+
+    /******************************************************
+ * @DELETE DELETE REVIEW
+ * @route http://localhost:4000/api/v1/review/:id
+ * @description FRONTEND WILL SEND product id in params and the review of that particular user will be deleted
+ * @params product id
+ * @returns object containing success
+ ******************************************************/
+    //1.GET PRODUCT ID FROM PARAMS AND GET THAT PARTICULAR PRODUCT
+    //2.FIND ALL THOSE  FILTERED OBJECTS WHERE ID IS NOT USERID 
+    //3.UPDATE NUMBER OF REVIRWS WHICH IS LENGTH OF FILTERED ARRAY
+    //4. UPDATE revies,numberofReviews and ratings in mongodb itself
+    //5.UPDATE IN THE DATABSE
+    //6. SEND A SUCCESS MESSAGE
+    exports.deleteReview = BigPromise(async (req, res, next) => {
+      const productId=req.params.id;
+      const product=await Product.findById(productId);
+      const narr = product.reviews.filter((rev) => rev.user.toString()!=req.user._id.toString());
+      console.log(narr);
+      product.reviews=narr;
+      product.numberOfReviews=narr.length;
+      product.ratings=narr.reduce((acc, item) => item.rating + acc, 0) / narr.length;
+      await product.save({
+        validateBeforeSave:false,
+      });
+      res.status(200).json({
+        success:true,
+      });
   });
 
 /******************************************************
