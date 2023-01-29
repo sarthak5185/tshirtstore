@@ -126,7 +126,11 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
     }
     const product = await Product.findById(productId);
 
-    const AlreadyReview=Product.find({_id:{productId},"reviews.user":req.user._id});
+    const AlreadyReview = product.reviews.find(
+      (rev) => rev.user.toString() === req.user._id.toString()
+    );
+
+    // const AlreadyReview=Product.find({_id:{productId},"reviews.user":req.user._id});
    
     if(AlreadyReview.length>0)
     {
