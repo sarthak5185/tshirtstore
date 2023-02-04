@@ -1,0 +1,25 @@
+{
+    "shippingInfo": {
+      "address": "1 Jaipur",
+      "city": "Jaipur",
+      "phoneNo": "9898989898",
+      "postalCode": "302020",
+      "state": "Rajasthan",
+      "country": "India"
+    },
+    "orderItems": [
+      {
+        "name": "USP ASSN",
+        "quantity": 1,
+        "image": "https://res.cloudinary.com/dyfqec6jb/image/upload/v1674889171/products/g8khuqrxjhlfxaasp2dq.jpg",
+        "price":800,
+        "product": "63d510cc8fe9d7f303046521"
+      }
+    ],
+    "paymentInfo": {
+      "id": "testString"
+    },
+    "taxAmount": 40,
+    "shippingAmount": 10,
+    "totalAmount": 850
+  }
