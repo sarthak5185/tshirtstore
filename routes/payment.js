@@ -7,7 +7,7 @@ const {
 const {isLoggedIn,isCustomRole} = require("../middlewares/user");
 
 router.route("/stripekey").get(isLoggedIn, sendStripeKey);
-router.route("/capturestripe").post(isLoggedIn, captureStripePayment);
-
+// router.route("/payment").post(isLoggedIn,captureStripePayment);
+router.route("/checkout/payment").post(captureStripePayment);
 
 module.exports=router;

@@ -99,7 +99,7 @@ exports.getAllProduct=BigPromise(async(req,res)=>{
  * @params ID
  * @returns object containing success message,product
  ******************************************************/
-  exports.getOneProduct=BigPromise(async(req,res)=>{
+  exports.getOneProduct=BigPromise(async(req,res,next)=>{
     let prod=await Product.findById(req.params.id);
     if (!prod) {
       return next(new CustomError("No product found with this id", 401));
