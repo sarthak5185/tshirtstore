@@ -6,7 +6,7 @@ const {
   } = require("../controllers/paymentController");
 const {isLoggedIn,isCustomRole} = require("../middlewares/user");
 
-router.route("/stripekey").get(isLoggedIn, sendStripeKey);
+router.route("/stripekey").get(sendStripeKey);
 // router.route("/payment").post(isLoggedIn,captureStripePayment);
 router.route("/checkout/payment").post(captureStripePayment);
 

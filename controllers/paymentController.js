@@ -10,45 +10,44 @@ exports.sendStripeKey = BigPromise(async (req, res, next) => {
   });
 });
 
-// exports.captureStripePayment = BigPromise(async (req, res, next) => {
-//   const paymentIntent = await stripe.paymentIntents.create({
-//     amount: req.body.amount,
-//     currency: "inr",
-//     metadata: { integration_check: "accept_a_payment" },
-//   });
-
-//   res.status(200).json({
-//     success: true,
-//     amount: req.body.amount,
-//     client_secret: paymentIntent.client_secret,
-//     //you can optionally send id as well
-//   });
-// });
-exports.captureStripePayment =BigPromise(async (req, res,next) => 
-{
-  console.log(req.body.arr);
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "payment",
-    line_items: req.body.arr.map(item => {
-      return {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name:item.name,
-            id:item._id,
-            quantity:item.quantity,
-          },
-          unit_amount:item.price,
-        },
-        quantity: item.quantity,
-      }
-    }),
-    success_url: `${process.env.CLIENT_URL}/Success`,
-    cancel_url: `${process.env.CLIENT_URL}/Cart`,
-  })
-  res.json({ url: session.url })
-})
+exports.captureStripePayment = BigPromise(async (req, res, next) => {
+  const paymentIntent = await stripe.paymentIntents.create({
+   amount: req.body.amount,
+   currency: 'usd',
+//optional
+    metadata: { integration_check: "accept_a_payment" },
+  });
+  res.status(200).json({
+    success: true,
+    amount: req.body.amount,
+    clientSecret: paymentIntent.client_secret,
+  });
+});
+// exports.captureStripePayment =BigPromise(async (req, res,next) => 
+// {
+//   console.log(req.body.arr);
+//   const session = await stripe.checkout.sessions.create({
+//     payment_method_types: ["card"],
+//     mode: "payment",
+//     line_items: req.body.arr.map(item => {
+//       return {
+//         price_data: {
+//           currency: "usd",
+//           product_data: {
+//             name:item.name,
+//             id:item._id,
+//             quantity:item.quantity,
+//           },
+//           unit_amount:item.price,
+//         },
+//         quantity: item.quantity,
+//       }
+//     }),
+//     success_url: `${process.env.CLIENT_URL}/Success`,
+//     cancel_url: `${process.env.CLIENT_URL}/Cart`,
+//   })
+//   res.json({ url: session.url })
+// })
 // exports.captureStripePayment = BigPromise(async (req, res, next) => {
 //     const {product,token}=req.body;
 //     console.log("Product",product);
