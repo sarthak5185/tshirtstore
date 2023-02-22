@@ -11,11 +11,16 @@ exports.sendStripeKey = BigPromise(async (req, res, next) => {
 });
 
 exports.captureStripePayment = BigPromise(async (req, res, next) => {
+  console.log(req.body.amount);
+  console.log(typeof(req.body.amount));
   const paymentIntent = await stripe.paymentIntents.create({
-   amount: req.body.amount,
-   currency: 'usd',
-//optional
-    metadata: { integration_check: "accept_a_payment" },
+   amount:100,
+   currency: 'inr',
+   metadata: { integration_check: "accept_a_payment" },
+   payment_method_types: [
+    'card',
+  ],
+
   });
   res.status(200).json({
     success: true,
