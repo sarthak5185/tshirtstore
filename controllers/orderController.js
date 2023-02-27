@@ -17,6 +17,7 @@ exports.createOrder = BigPromise(async (req, res, next) => {
       taxAmount,
       shippingAmount,
       totalAmount,
+      userid
     } = req.body;
   
     const order = await Order.create({
@@ -26,12 +27,13 @@ exports.createOrder = BigPromise(async (req, res, next) => {
       taxAmount,
       shippingAmount,
       totalAmount,
-      user: req.user._id,
+      user:userid,
     });
-  
+    const id=order._id;
     res.status(200).json({
       success: true,
       order,
+      id
     });
   });
 /******************************************************

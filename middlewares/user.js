@@ -8,13 +8,14 @@ const jwt = require("jsonwebtoken");
 //4.DECODED INFO HAS A ID QUERY THE DB USING THAT ID
 //5.ATTACH THE USER FOUND IN DB TO NEW PARAMAS OF USER WHICH IS REQ.USER
 exports.isLoggedIn=BigPromise(async(req,res,next)=>{
-    const token=req.cookies.token;
-    if (!token && req.header("Authorization")) {
-        token = req.header("Authorization").replace("Bearer ", "");
-    }
-    const decoded=jwt.verify(token,process.env.JWT_SECRET);
-    req.user=await User.findById(decoded.id);
-    next();
+  let token=req.cookies.token;
+  console.log(req);
+  if (!token && req.header("Authorization")) {
+      token = req.header("Authorization").split(" ")[1];
+  }
+  const decoded=jwt.verify(token,process.env.JWT_SECRET);
+  req.user=await User.findById(decoded.id);
+  next();
 });
 // 1. MIDDLWARE ADDED TO CHECK WHETER THE ROLE OF USER MATCHES WHAT BEING PASSED AS PARAMETER
 //2. IF NOT THROW AN ERROR

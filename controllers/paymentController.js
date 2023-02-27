@@ -14,7 +14,7 @@ exports.captureStripePayment = BigPromise(async (req, res, next) => {
   console.log(req.body.amount);
   console.log(typeof(req.body.amount));
   const paymentIntent = await stripe.paymentIntents.create({
-   amount:100,
+   amount:req.body.amount,
    currency: 'inr',
    metadata: { integration_check: "accept_a_payment" },
    payment_method_types: [
